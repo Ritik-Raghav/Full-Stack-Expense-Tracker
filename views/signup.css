@@ -1,0 +1,54 @@
+/* body {
+    margin: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+}
+.container {
+    margin: 0%;
+    width: 100%;
+    height: 5rem;
+    background-color: rgb(0, 22, 77);
+}
+.header {
+    margin: 0%;
+    width: 100%;
+}
+
+#signup-heading {
+    display: flex;
+    height: 5rem;
+    justify-content: center;
+    align-items: center;
+    color: rgb(255, 255, 255);
+    margin: 0%;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.main {
+    margin: 0%;
+    width: 100%;
+    height: max-content;
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#signup-form {
+    background-color: yellowgreen;
+    margin: 0%;
+    width: 30rem;
+    height: 20rem;
+}
+.input-box {
+    color: black;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    display: block;
+}
+label {
+    display: block;
+    margin: 0%;
+} */
