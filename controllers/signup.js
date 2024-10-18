@@ -16,6 +16,7 @@ exports.postUser = async (req, res, next) => {
         res.status(201).json(newUser);
     }
     catch(error) {
+        res.status(403).json({ message: 'request failed with status code 403'})
         console.log(error);
     }
 }

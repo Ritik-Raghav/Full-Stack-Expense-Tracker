@@ -20,6 +20,7 @@ form.addEventListener('submit', async (event) => {
     }
     catch(error) {
         console.log(error);
+        alert('User already exists!');
     }
 
     event.target.reset();
