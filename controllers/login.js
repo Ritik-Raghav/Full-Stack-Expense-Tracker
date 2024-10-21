@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const sequelize = require('../util/database');
+const bcrypt = require('bcrypt');
 
 exports.postUser = async (req, res, next) => {
     try {
@@ -11,12 +12,17 @@ exports.postUser = async (req, res, next) => {
             return res.status(404).json({ message: 'User not found!'})
         }
         else {
-            if (user.password === password) {
-                return res.status(204).json({message: 'User logged in successfully'});
-            }
-            else {
-                res.status(401).json({ message: 'Password does not match!'})
-            }
+            bcrypt.compare(password, user.password, (err, result) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Something went wrong'})
+                }
+                if (result) {
+                    res.status(204).json({message: 'User logged in successfully'});
+                }
+                else {
+                    return res.status(401).json({ message: 'Password does not match!'})
+                }
+            })
         }
 
     }
