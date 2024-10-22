@@ -17,7 +17,7 @@ form.addEventListener('submit', async (event) => {
         const response = await axios.post('http://localhost:3000/signup/user', userObj);
         const user = response.data;
         alert('User signed up successfully');
-        window.location.href = "http://localhost:5500/views/login/login.html"
+        window.location.href = "http://127.0.0.1:5500/views/login/login.html"
         console.log(user)
     }
     catch(error) {

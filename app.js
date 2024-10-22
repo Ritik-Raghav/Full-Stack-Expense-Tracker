@@ -24,6 +24,9 @@ app.use('/login/', loginRoutes);
 
 app.use('/expense/' , formRoutes);
 
+Expense.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
+User.hasMany(Expense);
+
 sequelize.sync()
     .then(() => {
         app.listen(3000);

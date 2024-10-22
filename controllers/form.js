@@ -4,17 +4,18 @@ const sequelize = require('../util/database');
 
 exports.postExpense = async (req, res, next) => {
     try {
+        const user = req.user;
+        console.log(user);
         const amount = req.body.amount;
         const desc = req.body.desc;
         const category = req.body.category;
 
-        const newExpense = await Expense.create({
+        const newExpense = await user.createExpense({
             amount,
             desc,
             category
         });
         res.status(201).json(newExpense);
-
     }
     catch(error) {
         res.status(403).json({ message: 'request failed with status code 403'})
@@ -24,7 +25,8 @@ exports.postExpense = async (req, res, next) => {
 
 exports.getExpense = async (req, res, next) => {
     try {
-        const expenses = await Expense.findAll();
+        const user = req.user;
+        const expenses = await user.getExpenses();
         res.status(200).json(expenses);
     }
     catch(error) {
