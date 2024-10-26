@@ -4,6 +4,39 @@ window.addEventListener('DOMContentLoaded', loadData);
 
 const form = document.querySelector('form');
 const token = localStorage.getItem('token');
+const premiumBtn = document.querySelector('#rzp-button1');
+
+premiumBtn.onclick = async (e) => {
+   const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: {"Authorization" : token}});
+   console.log(response);
+   var options = {
+    'key': response.data.key_id,
+    'order_id': response.data.order.id,
+    // This handler function handle the successfull payment
+    "handler": async function (response) {
+        await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+            order_id: options.order_id,
+            payment_id: response.razorpay_payment_id,
+        }, { headers: {"Authorization" : token} });
+
+        alert('You are a Premium User Now');
+        premiumChanges();
+    }
+   };
+   const rzp1 = new Razorpay(options);
+   rzp1.open();
+   e.preventDefault();
+   
+
+   rzp1.on('payment.failed', async function (response) {
+    console.log(response);
+    await axios.post('http://localhost:3000/purchase/marktransactionfailed', {
+            order_id: options.order_id,
+        }, { headers: { "Authorization": token } });
+    alert('Payment failed please try again');
+   });
+
+}
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -20,7 +53,6 @@ form.addEventListener('submit', async (event) => {
     try {
         const response = await axios.post('http://localhost:3000/expense/addExpense', obj, { headers: {"Authorization" : token}});
         const data = response.data;
-        console.log(data);
         displayExpense(data);
     }
     catch(error) {
@@ -30,9 +62,28 @@ form.addEventListener('submit', async (event) => {
     event.target.reset();
 });
 
+async function premiumStatus() {
+    const response = await axios.get('http://localhost:3000/expense/getUser', { headers: {"Authorization" : token}});
+    const premiumStatus = response.data.premiumStatus;
+    if (premiumStatus) {
+        premiumChanges();
+    }
+}
+
+function premiumChanges() {
+    premiumBtn.style.display = 'none';
+
+    const text = document.createElement('h5');
+    text.className = 'float-right'
+    text.textContent = 'You are a Premium Member';
+    text.style.color = 'green';
+    const parentElement = document.querySelector('#premium_status');
+    parentElement.appendChild(text);
+}
+
 function displayExpense(obj) {
     console.log(obj.id)
-    const item = document.createElement('h5');
+    const item = document.createElement('p');
     item.textContent = obj.amount + ' - ' + obj.desc + ' - ' + obj.category;
     
     // creating delete button
@@ -71,6 +122,7 @@ async function loadData() {
         data.forEach(expense => {
             displayExpense(expense);
         })
+        premiumStatus();
     }
     catch(error) {
         console.log(error);

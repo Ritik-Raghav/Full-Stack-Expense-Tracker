@@ -7,6 +7,8 @@ router.post('/addExpense', userAuthentication.authenticate, formController.postE
 
 router.get('/addExpense', userAuthentication.authenticate, formController.getExpense);
 
+router.get('/getUser', userAuthentication.authenticate, formController.getUser);
+
 router.delete('/delete/:id', formController.deleteExpense);
 
 module.exports = router;

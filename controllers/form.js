@@ -51,3 +51,13 @@ exports.deleteExpense = async (req, res, next) => {
         res.status(500).json({ message: 'Failed to delete expense'});
     }
 }
+
+exports.getUser = async (req, res, next) => {
+    try {
+        const user = req.user;
+        return res.status(200).json({ premiumStatus: user.isPremiumUser});
+    }
+    catch(error) {
+        console.log(error);
+    }
+}

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 
@@ -7,10 +8,12 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const User = require('./models/user');
 const Expense = require('./models/expense');
+const Order = require('./models/order');
 
 const signupRoutes = require('./routes/signup');
 const loginRoutes = require('./routes/login');
 const formRoutes = require('./routes/form');
+const purchaseRoutes = require('./routes/purchase');
 
 app.use(cors());
 
@@ -24,8 +27,13 @@ app.use('/login/', loginRoutes);
 
 app.use('/expense/' , formRoutes);
 
+app.use('/purchase/', purchaseRoutes);
+
 Expense.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Expense);
+
+Order.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
+User.hasMany(Order);
 
 sequelize.sync()
     .then(() => {
