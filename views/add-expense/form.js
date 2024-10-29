@@ -31,7 +31,7 @@ function displayUserLeaderboard(obj) {
         const user = obj[i];
         const boardItem = document.createElement('li');
         boardItem.className = 'board-item';
-        boardItem.textContent = 'Name: ' + user.name + ' ' + '------------' + ' ' + 'Total Cost: ' + user.total_cost;
+        boardItem.textContent = 'Name: ' + user.username + ' ' + '------------' + ' ' + 'Total Cost: ' + user.total_cost;
         leaderList.appendChild(boardItem);
     }
 }
