@@ -9,12 +9,17 @@ exports.postExpense = async (req, res, next) => {
         const amount = req.body.amount;
         const desc = req.body.desc;
         const category = req.body.category;
-
+        const totalExpense = Number(req.user.totalExpenses) + Number(amount);
+        console.log(totalExpense);
+        
         const newExpense = await user.createExpense({
             amount,
             desc,
             category
         });
+        await user.update({
+            totalExpenses: totalExpense
+        })
         res.status(201).json(newExpense);
     }
     catch(error) {
