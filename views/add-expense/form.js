@@ -5,6 +5,36 @@ window.addEventListener('DOMContentLoaded', loadData);
 const form = document.querySelector('form');
 const token = localStorage.getItem('token');
 const premiumBtn = document.querySelector('#rzp-button1');
+const leaderboardBtn = document.querySelector('#leader-button');
+const leaderboardContainer = document.querySelector('.board-container');
+const leaderList = document.querySelector('#leader-list');
+
+leaderboardContainer.style.display = 'none';
+
+leaderboardBtn.onclick = async (e) => {
+    const response = await axios.get('http://localhost:3000/premium/showLeaderBoard');
+    const data = response.data;
+    
+    if (leaderboardContainer.style.display === 'none') {
+        displayUserLeaderboard(data);
+        leaderboardContainer.style.display = 'block';
+    }
+    else {
+        leaderList.innerHTML = '';
+        leaderboardContainer.style.display = 'none';
+    }
+}
+
+function displayUserLeaderboard(obj) {
+    
+    for (let i=0; i<obj.length; i++) {
+        const user = obj[i];
+        const boardItem = document.createElement('li');
+        boardItem.className = 'board-item';
+        boardItem.textContent = 'Name: ' + user.name + ' ' + '------------' + ' ' + 'Total Cost: ' + user.total_cost;
+        leaderList.appendChild(boardItem);
+    }
+}
 
 premiumBtn.onclick = async (e) => {
    const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: {"Authorization" : token}});
@@ -73,10 +103,11 @@ async function premiumStatus() {
 function premiumChanges() {
     premiumBtn.style.display = 'none';
 
-    const text = document.createElement('h5');
+    const text = document.createElement('p');
     text.className = 'float-right'
     text.textContent = 'You are a Premium Member';
     text.style.color = 'green';
+    text.style.fontWeight = 'bold'
     const parentElement = document.querySelector('#premium_status');
     parentElement.appendChild(text);
 }
@@ -90,14 +121,9 @@ function displayExpense(obj) {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn btn-sm btn-danger float-right';
 
-    // const editBtn = document.createElement('button');
-    // editBtn.className = 'btn btn-sm btn-warning float-right ml-2';
-
     delBtn.textContent = 'Delete';
-    // editBtn.textContent = 'Edit';
 
     item.appendChild(delBtn);
-    // item.appendChild(editBtn);
 
     // adding delete functionality
     delBtn.onclick = async (event) => {
@@ -111,7 +137,7 @@ function displayExpense(obj) {
         
     }
 
-    const list = document.querySelector('ul');
+    const list = document.querySelector('.list-group');
     list.appendChild(item);
 }
 

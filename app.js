@@ -14,6 +14,7 @@ const signupRoutes = require('./routes/signup');
 const loginRoutes = require('./routes/login');
 const formRoutes = require('./routes/form');
 const purchaseRoutes = require('./routes/purchase');
+const premiumRoutes = require('./routes/premium');
 
 app.use(cors());
 
@@ -28,6 +29,8 @@ app.use('/login/', loginRoutes);
 app.use('/expense/' , formRoutes);
 
 app.use('/purchase/', purchaseRoutes);
+
+app.use('/premium/', premiumRoutes);
 
 Expense.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Expense);
