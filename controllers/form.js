@@ -4,6 +4,7 @@ const sequelize = require('../util/database');
 
 exports.postExpense = async (req, res, next) => {
     try {
+        const t = await sequelize.transaction();
         const user = req.user;
         console.log(user);
         const amount = req.body.amount;
@@ -16,13 +17,16 @@ exports.postExpense = async (req, res, next) => {
             amount,
             desc,
             category
-        });
+        }, { transaction: t});
         await user.update({
             totalExpenses: totalExpense
-        })
+        }, { transaction: t});
+        await t.commit();
+
         res.status(201).json(newExpense);
     }
     catch(error) {
+        await t.rollback();
         res.status(403).json({ message: 'request failed with status code 403'})
         console.log(error);
     }
@@ -42,12 +46,16 @@ exports.getExpense = async (req, res, next) => {
 
 exports.deleteExpense = async (req, res, next) => {
     try {
+        const t = await sequelize.transaction();
         const expenseId = req.params.id;
         const expense = await Expense.findByPk(expenseId);
         if (!expense) {
+            await t.rollback();
             return res.status(404).json({ message: 'Expense not found'});
         }
         await expense.destroy();
+        await t.commit();
+
         console.log('Expense Deleted!');
         res.status(200).json({ message: 'Expense deleted successfully!'});
     }
