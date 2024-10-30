@@ -1,4 +1,10 @@
 const form = document.querySelector('#signup-form');
+const loginContainer = document.querySelector('#login-container');
+const forgetBtn = document.querySelector('#forget-btn');
+
+forgetBtn.onclick = (e) => {
+    window.location.href = "http://127.0.0.1:5500/views/forget-password/forget.html"
+}
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
