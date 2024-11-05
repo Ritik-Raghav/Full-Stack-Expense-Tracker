@@ -8,8 +8,27 @@ const premiumBtn = document.querySelector('#rzp-button1');
 const leaderboardBtn = document.querySelector('#leader-button');
 const leaderboardContainer = document.querySelector('.board-container');
 const leaderList = document.querySelector('#leader-list');
+const downloadBtn = document.querySelector('#download-button');
 
 leaderboardContainer.style.display = 'none';
+downloadBtn.style.display = 'none';
+
+downloadBtn.onclick = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} });
+        if (response.status === 201) {
+            var a = document.createElement('a');
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        }
+    }
+    catch(error) {
+        console.log(error);
+    }
+    
+}
 
 leaderboardBtn.onclick = async (e) => {
     const response = await axios.get('http://localhost:3000/premium/showLeaderBoard');
@@ -105,11 +124,14 @@ function premiumChanges() {
 
     const text = document.createElement('p');
     text.className = 'float-right'
-    text.textContent = 'You are a Premium Member';
+    text.textContent = 'Premium Member';
     text.style.color = 'green';
     text.style.fontWeight = 'bold'
     const parentElement = document.querySelector('#premium_status');
     parentElement.appendChild(text);
+
+    // Download expense button visibility
+    downloadBtn.style.display = 'block';
 }
 
 function displayExpense(obj) {
