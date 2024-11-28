@@ -10,6 +10,7 @@ const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const Forgotpassword = require('./models/forgotpassword');
+const Files = require('./models/files');
 
 const signupRoutes = require('./routes/signup');
 const loginRoutes = require('./routes/login');
@@ -44,6 +45,9 @@ User.hasMany(Order);
 
 Forgotpassword.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Forgotpassword);
+
+Files.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
+User.hasMany(Files);
 
 
 

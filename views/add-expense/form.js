@@ -8,7 +8,10 @@ const premiumBtn = document.querySelector('#rzp-button1');
 const leaderboardBtn = document.querySelector('#leader-button');
 const leaderboardContainer = document.querySelector('.board-container');
 const leaderList = document.querySelector('#leader-list');
+const fileList = document.querySelector('#file-list');
 const downloadBtn = document.querySelector('#download-button');
+
+leaderboardBtn.style.display = 'none';
 
 leaderboardContainer.style.display = 'none';
 downloadBtn.style.display = 'none';
@@ -16,18 +19,36 @@ downloadBtn.style.display = 'none';
 downloadBtn.onclick = async (event) => {
     event.preventDefault();
     try {
-        const response = await axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} });
-        if (response.status === 201) {
+        const response = await axios.get('http://localhost:3000/premium/downloadExpenses', { headers: {"Authorization" : token} });
+        if (response.status === 200) {
             var a = document.createElement('a');
-            a.href = response.data.fileUrl;
+            a.href = response.data.obj.Location;
             a.download = 'myexpense.csv';
             a.click();
+
+            // const fileURL = response.data.obj.Location;
+            const fileInfo = response.data.obj;
+            const obj = {
+                fileInfo
+            }
+
+            const postResponse = await axios.post('http://localhost:3000/premium/uploadFiles', obj, { headers: {"Authorization" : token} });
+            const data = postResponse.data;
+            displayFiles(data);
+            console.log(data)
         }
     }
     catch(error) {
         console.log(error);
     }
     
+}
+
+function displayFiles(obj) {
+    const link = document.createElement('a');
+    link.href = obj.fileURL;
+    link.textContent = obj.key;
+    fileList.appendChild(link);
 }
 
 leaderboardBtn.onclick = async (e) => {
@@ -132,6 +153,9 @@ function premiumChanges() {
 
     // Download expense button visibility
     downloadBtn.style.display = 'block';
+
+    // Leaderboard button visibility
+    leaderboardBtn.style.display = 'block';
 }
 
 function displayExpense(obj) {
@@ -171,6 +195,22 @@ async function loadData() {
             displayExpense(expense);
         })
         premiumStatus();
+        
+        // Loading downloaded expenses data
+        loadFiles();
+    }
+    catch(error) {
+        console.log(error);
+    }
+}
+
+async function loadFiles() {
+    try {
+        const getResponse = await axios.get('http://localhost:3000/premium/uploadFiles', { headers: {"Authorization" : token} });
+        const files = getResponse.data;
+        files.forEach(file => {
+            displayFiles(file);
+        });
     }
     catch(error) {
         console.log(error);

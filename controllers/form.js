@@ -6,7 +6,6 @@ exports.postExpense = async (req, res, next) => {
     try {
         const t = await sequelize.transaction();
         const user = req.user;
-        console.log(user);
         const amount = req.body.amount;
         const desc = req.body.desc;
         const category = req.body.category;
