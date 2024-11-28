@@ -33,6 +33,24 @@
       button {
         margin-left: 10px;
       }
+
+      /* ---------- */
+
+      #pagination button {
+        margin: 0 5px;
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #pagination button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
     </style>
 
     <title>Expense Tracking Application</title>
@@ -90,7 +108,13 @@
   
           <button type="submit" class="btn btn-primary col-12">Add Expense</button>
         </form>
-        <ul class="list-group mt-4"></ul>
+        <div id="pagination">
+          <button id="prevBtn">Previous</button>
+          <span id="currentPage">1</span>
+          <button id="nextBtn">Next</button>
+        </div>
+        <!-- <div id="itemsContainer"></div> -->
+        <ul class="list-group mt-4" id="itemsContainer"></ul>
       </div>
       
       <div class="right-side container">

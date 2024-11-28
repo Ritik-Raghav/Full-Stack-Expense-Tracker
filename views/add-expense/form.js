@@ -216,3 +216,78 @@ async function loadFiles() {
         console.log(error);
     }
 }
+
+//----------------------------------
+
+const itemsContainer = document.getElementById('itemsContainer');
+const currentPageElement = document.getElementById('currentPage');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+// const token = localStorage.getItem('token');  // Assuming token is stored in localStorage
+
+let currentPage = 1;
+const size = 5; // Number of items per page
+
+// Function to fetch and render items
+async function fetchItems(page) {
+    try {
+        const response = await axios.get(`http://localhost:3000/expense/items?page=${page}&size=${size}`, {
+            headers: {"Authorization": token}
+        });
+
+        const data = response.data;
+
+        // Render items
+        itemsContainer.innerHTML = data.items.map(item => {
+            return `
+                <li class="list-group-item">
+                    ${item.amount} - ${item.desc} - ${item.category}
+                </li>
+            `;
+        }).join('');
+
+        // Update pagination info
+        currentPage = data.currentPage;
+        currentPageElement.textContent = currentPage;
+
+        // Disable/Enable buttons
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === data.totalPages;
+
+        renderPagination(data.totalPages);
+    } catch (error) {
+        console.error('Error fetching items:', error);
+    }
+}
+
+// Event Listeners
+prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+        fetchItems(currentPage - 1);
+    }
+});
+
+nextBtn.addEventListener('click', () => {
+    fetchItems(currentPage + 1);
+});
+
+// Function to render pagination buttons (if necessary)
+function renderPagination(totalPages) {
+    const paginationDiv = document.getElementById('pagination');
+    paginationDiv.innerHTML = '';
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        pageButton.disabled = i === currentPage;
+
+        pageButton.addEventListener('click', () => {
+            fetchItems(i);
+        });
+
+        paginationDiv.appendChild(pageButton);
+    }
+}
+
+// Initial fetch of items when the page loads
+fetchItems(currentPage);

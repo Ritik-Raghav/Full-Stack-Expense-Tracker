@@ -9,6 +9,8 @@ router.get('/addExpense', userAuthentication.authenticate, formController.getExp
 
 router.get('/getUser', userAuthentication.authenticate, formController.getUser);
 
+router.get('/items', userAuthentication.authenticate, formController.getItems);
+
 router.delete('/delete/:id', formController.deleteExpense);
 
 module.exports = router;

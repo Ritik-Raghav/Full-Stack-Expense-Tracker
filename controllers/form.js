@@ -73,3 +73,32 @@ exports.getUser = async (req, res, next) => {
         console.log(error);
     }
 }
+
+exports.getItems = async (req, res, next) => {
+    const { page = 1, size = 5 } = req.query;
+
+    try {
+        // Convert page and size to integers
+        const limit = parseInt(size);
+        const offset = (parseInt(page) - 1) * limit;
+
+        // Retrieve paginated data and total count using findAndCountAll
+        const { count, rows } = await req.user.getExpenses({
+            limit,
+            offset,
+            distinct: true, // Use this to ensure accurate count if there are joins
+        });
+
+        // Respond with paginated data
+        res.json({
+            totalItems: count, // Total count of items
+            items: rows,       // Items on the current page
+            totalPages: Math.ceil(count / limit), // Total number of pages
+            currentPage: parseInt(page), // Current page number
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
