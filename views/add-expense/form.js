@@ -301,4 +301,9 @@ function renderPagination(totalPages) {
 }   
 
 
-
+const rowsNum = document.querySelector('#rows-num');
+rowsNum.addEventListener('change', (e) => {
+    const num = e.target.value;
+    size = num;
+    fetchItems(currentPage)
+})
