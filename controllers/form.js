@@ -75,22 +75,27 @@ exports.getUser = async (req, res, next) => {
 }
 
 exports.getItems = async (req, res, next) => {
-    const { page = 1, size = 5 } = req.query;
+    let { page, size } = req.query;
 
     try {
         // Convert page and size to integers
-        const limit = parseInt(size);
-        const offset = (parseInt(page) - 1) * limit;
+        page = parseInt(page);
+        size = parseInt(size);
+        const limit = size;
+        const offset = (page - 1) * limit;
 
         // Retrieve paginated data and total count using findAndCountAll
-        const { count, rows } = await req.user.getExpenses({
-            limit,
-            offset,
-            distinct: true, // Use this to ensure accurate count if there are joins
-        });
+        const { count, rows } = await Expense.findAndCountAll({
+            include: [{
+                model: User,
+                where: { id: req.user.id },
+                attributes: []
+            }],
+            limit, offset
+        })
 
         // Respond with paginated data
-        res.json({
+        return res.json({
             totalItems: count, // Total count of items
             items: rows,       // Items on the current page
             totalPages: Math.ceil(count / limit), // Total number of pages

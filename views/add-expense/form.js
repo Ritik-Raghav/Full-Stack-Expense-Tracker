@@ -1,6 +1,9 @@
 
 
-window.addEventListener('DOMContentLoaded', loadData);
+window.addEventListener('DOMContentLoaded', () => {
+    fetchItems(currentPage);
+    loadData();
+});
 
 const form = document.querySelector('form');
 const token = localStorage.getItem('token');
@@ -10,6 +13,7 @@ const leaderboardContainer = document.querySelector('.board-container');
 const leaderList = document.querySelector('#leader-list');
 const fileList = document.querySelector('#file-list');
 const downloadBtn = document.querySelector('#download-button');
+
 
 leaderboardBtn.style.display = 'none';
 
@@ -124,6 +128,7 @@ form.addEventListener('submit', async (event) => {
         const response = await axios.post('http://localhost:3000/expense/addExpense', obj, { headers: {"Authorization" : token}});
         const data = response.data;
         displayExpense(data);
+        fetchItems(currentPage)
     }
     catch(error) {
         console.log(error);
@@ -159,41 +164,46 @@ function premiumChanges() {
 }
 
 function displayExpense(obj) {
-    console.log(obj.id)
-    const item = document.createElement('p');
-    item.textContent = obj.amount + ' - ' + obj.desc + ' - ' + obj.category;
-    
-    // creating delete button
-    const delBtn = document.createElement('button');
-    delBtn.className = 'btn btn-sm btn-danger float-right';
+    // Create a new list item for the expense
+    const item = document.createElement('li');
+    item.id = `expense-${obj.id}`;
+    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+    item.textContent = `${obj.amount} - ${obj.desc} - ${obj.category}`;
 
+    // Create the delete button
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-sm btn-danger';
     delBtn.textContent = 'Delete';
 
+    // Attach delete functionality to the button
+    delBtn.onclick = async () => {
+        try {
+            await axios.delete(`http://localhost:3000/expense/delete/${obj.id}`, {
+                headers: { "Authorization": token }
+            });
+            item.remove(); // Remove the item from the list upon successful deletion
+        } catch (error) {
+            console.error('Error deleting expense:', error);
+        }
+    };
+
+    // Append the delete button to the list item
     item.appendChild(delBtn);
 
-    // adding delete functionality
-    delBtn.onclick = async (event) => {
-        try {
-            const response = await axios.delete(`http://localhost:3000/expense/delete/${obj.id}`);
-            list.removeChild(event.target.parentElement);
-        }
-        catch(error) {
-            console.log(error);
-        }
-        
-    }
-
+    // Add the new item to the expense list
     const list = document.querySelector('.list-group');
     list.appendChild(item);
 }
 
+
+
 async function loadData() {
     try {
-        const response = await axios.get('http://localhost:3000/expense/addExpense', { headers: {"Authorization" : token}});
-        const data = response.data;
-        data.forEach(expense => {
-            displayExpense(expense);
-        })
+        // const response = await axios.get('http://localhost:3000/expense/addExpense', { headers: {"Authorization" : token}});
+        // const data = response.data;
+        // data.forEach(expense => {
+        //     displayExpense(expense);
+        // })
         premiumStatus();
         
         // Loading downloaded expenses data
@@ -223,28 +233,27 @@ const itemsContainer = document.getElementById('itemsContainer');
 const currentPageElement = document.getElementById('currentPage');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-// const token = localStorage.getItem('token');  // Assuming token is stored in localStorage
 
 let currentPage = 1;
-const size = 5; // Number of items per page
+let size = 5; // Number of items per page
 
 // Function to fetch and render items
 async function fetchItems(page) {
     try {
         const response = await axios.get(`http://localhost:3000/expense/items?page=${page}&size=${size}`, {
-            headers: {"Authorization": token}
+            headers: { "Authorization": token }
         });
 
         const data = response.data;
 
-        // Render items
-        itemsContainer.innerHTML = data.items.map(item => {
-            return `
-                <li class="list-group-item">
-                    ${item.amount} - ${item.desc} - ${item.category}
-                </li>
-            `;
-        }).join('');
+        // Clear the existing list items
+        const list = document.querySelector('.list-group');
+        list.innerHTML = '';
+
+        // Render new items for the current page
+        data.items.forEach(item => {
+            displayExpense(item);
+        });
 
         // Update pagination info
         currentPage = data.currentPage;
@@ -254,11 +263,13 @@ async function fetchItems(page) {
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === data.totalPages;
 
+        // Render pagination buttons
         renderPagination(data.totalPages);
     } catch (error) {
         console.error('Error fetching items:', error);
     }
 }
+
 
 // Event Listeners
 prevBtn.addEventListener('click', () => {
@@ -287,7 +298,7 @@ function renderPagination(totalPages) {
 
         paginationDiv.appendChild(pageButton);
     }
-}
+}   
 
-// Initial fetch of items when the page loads
-fetchItems(currentPage);
+
+
