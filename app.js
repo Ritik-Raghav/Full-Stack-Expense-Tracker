@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const cors = require('cors');
+const helmet = require('helmet');
 
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
@@ -20,6 +21,8 @@ const premiumRoutes = require('./routes/premium');
 const forgetRoutes = require('./routes/forget');
 
 app.use(cors());
+
+app.use(helmet());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
