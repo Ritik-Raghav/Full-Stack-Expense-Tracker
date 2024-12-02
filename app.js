@@ -2,8 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+const path =  require('path');
+const fs =  require('fs');
+
+
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
@@ -20,9 +26,15 @@ const purchaseRoutes = require('./routes/purchase');
 const premiumRoutes = require('./routes/premium');
 const forgetRoutes = require('./routes/forget');
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a'});
+
 app.use(cors());
 
 app.use(helmet());
+
+app.use(compression());
+
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
