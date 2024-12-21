@@ -1,3 +1,5 @@
+import baseUrl from "..";
+
 const form = document.querySelector('#signup-form');
 
 form.addEventListener('submit', async (event) => {
@@ -14,10 +16,10 @@ form.addEventListener('submit', async (event) => {
     }
 
     try {
-        const response = await axios.post('http://localhost:3000/signup/user', userObj);
+        const response = await axios.post(`${baseUrl}/signup/user`, userObj);
         const user = response.data;
         alert('User signed up successfully');
-        window.location.href = "http://127.0.0.1:5500/views/login/login.html"
+        window.location.href = `${baseUrl}/login/login.html`
         console.log(user)
     }
     catch(error) {
