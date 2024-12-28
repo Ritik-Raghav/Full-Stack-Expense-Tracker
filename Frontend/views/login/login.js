@@ -6,7 +6,7 @@ const loginContainer = document.querySelector('#login-container');
 const forgetBtn = document.querySelector('#forget-btn');
 
 forgetBtn.onclick = (e) => {
-    window.location.href = `${frontendBaseUrl}/views/forget-password/forget.html`;
+    window.location.href = `${frontendBaseUrl}/forget-password/forget.html`;
 }
 
 form.addEventListener('submit', async (event) => {
@@ -27,7 +27,7 @@ form.addEventListener('submit', async (event) => {
         console.log(user.token);
         localStorage.setItem('token', user.token);
         alert('User logged in successfully');
-        window.location.href = `${frontendBaseUrl}/views/add-expense/form.html`
+        window.location.href = `${frontendBaseUrl}/add-expense/form.html`
     }
     catch(error) {
         console.log(error);
