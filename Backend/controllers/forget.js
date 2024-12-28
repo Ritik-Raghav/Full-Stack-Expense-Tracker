@@ -37,10 +37,18 @@ exports.forgotPassword = async (req, res, next) => {
                 htmlContent: `<a href="${backendBaseUrl}/password/resetpassword/${id}">Reset password</a>`,
             })
             console.log("Forgot Password record created successfully");
-        }
+
+	    return res.status(200).send({
+		valid: true,message: "mail sent successfully"
+            });
+
+	return res.status(200).send({
+		valid: false,
+		message: "user not found"
+	})
 
     }
-    catch(error) {
+    }catch(error) {
         console.log(error);
         res.send(error.message);
     }

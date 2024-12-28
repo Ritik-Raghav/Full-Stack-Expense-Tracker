@@ -66,10 +66,10 @@ User.hasMany(Files);
 
 
 
-sequelize.sync()
-    .then(() => {
-        app.listen(3000);
-    })
-    .catch(error => {
-        console.log(error);
-    })
+const syncDB = () => {
+	sequelize.sync().then(()=>{console.log("Synced!! ")});
+}
+app.listen(3000,()=>console.log("listening"))
+
+
+

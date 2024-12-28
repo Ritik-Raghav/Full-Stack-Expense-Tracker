@@ -16,7 +16,7 @@ forgetForm.addEventListener('submit', async (e) => {
         const response = await axios.post(`${backendBaseUrl}/password/forgotpassword`, obj);
         console.log(response);
         alert('Email sent successfully');
-        window.location.href = `${frontendBaseUrl}/views/login/login.html`;
+        window.location.href = `${frontendBaseUrl}/login/login.html`;
     }
     catch(error) {
         console.log(error);

@@ -48,11 +48,21 @@ exports.deleteExpense = async (req, res, next) => {
         const t = await sequelize.transaction();
         const expenseId = req.params.id;
         const expense = await Expense.findByPk(expenseId);
+
+        const userId = expense.userId;
+        const amountToDeduct = expense.amount;
+
         if (!expense) {
             await t.rollback();
             return res.status(404).json({ message: 'Expense not found'});
         }
-        await expense.destroy();
+
+        const user = await User.findByPk(userId);
+        await expense.destroy({transaction: t});
+        await user.decrement("totalExpenses", {
+                by: amountToDeduct,
+                transaction: t
+        });
         await t.commit();
 
         console.log('Expense Deleted!');
