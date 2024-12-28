@@ -1,4 +1,5 @@
-import baseUrl from "../index";
+const frontendBaseUrl = "http://13.127.242.103";
+const backendBaseUrl = "http://13.127.242.103:3000";
 
 const forgetForm = document.querySelector('#forget-form');
 
@@ -12,10 +13,10 @@ forgetForm.addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await axios.post(`${baseUrl.backendBaseUrl}/password/forgotpassword`, obj);
+        const response = await axios.post(`${backendBaseUrl}/password/forgotpassword`, obj);
         console.log(response);
         alert('Email sent successfully');
-        window.location.href = `${baseUrl.frontendBaseUrl}/views/login/login.html`;
+        window.location.href = `${frontendBaseUrl}/views/login/login.html`;
     }
     catch(error) {
         console.log(error);

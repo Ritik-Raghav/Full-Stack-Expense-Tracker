@@ -1,4 +1,5 @@
-import baseUrl from "../index";
+const frontendBaseUrl = "http://13.127.242.103";
+const backendBaseUrl = "http://13.127.242.103:3000";
 
 const form = document.querySelector('#signup-form');
 
@@ -16,10 +17,10 @@ form.addEventListener('submit', async (event) => {
     }
 
     try {
-        const response = await axios.post(`${baseUrl.backendBaseUrl}/signup/user`, userObj);
+        const response = await axios.post(`${backendBaseUrl}/signup/user`, userObj);
         const user = response.data;
         alert('User signed up successfully');
-        window.location.href = `${baseUrl.frontendBaseUrl}/login/login.html`
+        window.location.href = `${frontendBaseUrl}/login/login.html`
         console.log(user)
     }
     catch(error) {

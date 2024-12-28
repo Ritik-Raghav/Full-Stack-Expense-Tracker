@@ -1,4 +1,5 @@
-import baseUrl from "../index";
+const frontendBaseUrl = "http://13.127.242.103";
+const backendBaseUrl = "http://13.127.242.103:3000";
 
 const form = document.querySelector('#signup-form');
 const loginContainer = document.querySelector('#login-container');
@@ -21,12 +22,12 @@ form.addEventListener('submit', async (event) => {
     }
 
     try {
-        const response = await axios.post(`${baseUrl.backendBaseUrl}/login/user`, userObj);
+        const response = await axios.post(`${backendBaseUrl}/login/user`, userObj);
         const user = response.data;
         console.log(user.token);
         localStorage.setItem('token', user.token);
         alert('User logged in successfully');
-        window.location.href = `${baseUrl.frontendBaseUrl}/views/add-expense/form.html`
+        window.location.href = `${frontendBaseUrl}/views/add-expense/form.html`
     }
     catch(error) {
         console.log(error);

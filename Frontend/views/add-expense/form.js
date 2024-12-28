@@ -1,4 +1,5 @@
-import baseUrl from "../index";
+const frontendBaseUrl = "http://13.127.242.103";
+const backendBaseUrl = "http://13.127.242.103:3000";
 
 window.addEventListener('DOMContentLoaded', () => {
     fetchItems(currentPage);
@@ -23,7 +24,7 @@ downloadBtn.style.display = 'none';
 downloadBtn.onclick = async (event) => {
     event.preventDefault();
     try {
-        const response = await axios.get(`${baseUrl.backendBaseUrl}/premium/downloadExpenses`, { headers: {"Authorization" : token} });
+        const response = await axios.get(`${backendBaseUrl}/premium/downloadExpenses`, { headers: {"Authorization" : token} });
         if (response.status === 200) {
             var a = document.createElement('a');
             a.href = response.data.obj.Location;
@@ -36,7 +37,7 @@ downloadBtn.onclick = async (event) => {
                 fileInfo
             }
 
-            const postResponse = await axios.post(`${baseUrl.backendBaseUrl}/premium/uploadFiles`, obj, { headers: {"Authorization" : token} });
+            const postResponse = await axios.post(`${backendBaseUrl}/premium/uploadFiles`, obj, { headers: {"Authorization" : token} });
             const data = postResponse.data;
             displayFiles(data);
             console.log(data)
@@ -56,7 +57,7 @@ function displayFiles(obj) {
 }
 
 leaderboardBtn.onclick = async (e) => {
-    const response = await axios.get(`${baseUrl.backendBaseUrl}/premium/showLeaderBoard`);
+    const response = await axios.get(`${backendBaseUrl}/premium/showLeaderBoard`);
     const data = response.data;
     
     if (leaderboardContainer.style.display === 'none') {
@@ -81,14 +82,14 @@ function displayUserLeaderboard(obj) {
 }
 
 premiumBtn.onclick = async (e) => {
-   const response = await axios.get(`${baseUrl.backendBaseUrl}/purchase/premiummembership`, { headers: {"Authorization" : token}});
+   const response = await axios.get(`${backendBaseUrl}/purchase/premiummembership`, { headers: {"Authorization" : token}});
    console.log(response);
    var options = {
     'key': response.data.key_id,
     'order_id': response.data.order.id,
     // This handler function handle the successfull payment
     "handler": async function (response) {
-        await axios.post(`${baseUrl.backendBaseUrl}/purchase/updatetransactionstatus`, {
+        await axios.post(`${backendBaseUrl}/purchase/updatetransactionstatus`, {
             order_id: options.order_id,
             payment_id: response.razorpay_payment_id,
         }, { headers: {"Authorization" : token} });
@@ -104,7 +105,7 @@ premiumBtn.onclick = async (e) => {
 
    rzp1.on('payment.failed', async function (response) {
     console.log(response);
-    await axios.post(`${baseUrl.backendBaseUrl}/purchase/marktransactionfailed`, {
+    await axios.post(`${backendBaseUrl}/purchase/marktransactionfailed`, {
             order_id: options.order_id,
         }, { headers: { "Authorization": token } });
     alert('Payment failed please try again');
@@ -125,7 +126,7 @@ form.addEventListener('submit', async (event) => {
     }
 
     try {
-        const response = await axios.post(`${baseUrl.backendBaseUrl}/expense/addExpense`, obj, { headers: {"Authorization" : token}});
+        const response = await axios.post(`${backendBaseUrl}/expense/addExpense`, obj, { headers: {"Authorization" : token}});
         const data = response.data;
         displayExpense(data);
         fetchItems(currentPage)
@@ -138,7 +139,7 @@ form.addEventListener('submit', async (event) => {
 });
 
 async function premiumStatus() {
-    const response = await axios.get(`${baseUrl.backendBaseUrl}/expense/getUser`, { headers: {"Authorization" : token}});
+    const response = await axios.get(`${backendBaseUrl}/expense/getUser`, { headers: {"Authorization" : token}});
     const premiumStatus = response.data.premiumStatus;
     if (premiumStatus) {
         premiumChanges();
@@ -178,7 +179,7 @@ function displayExpense(obj) {
     // Attach delete functionality to the button
     delBtn.onclick = async () => {
         try {
-            await axios.delete(`${baseUrl.backendBaseUrl}/expense/delete/${obj.id}`, {
+            await axios.delete(`${backendBaseUrl}/expense/delete/${obj.id}`, {
                 headers: { "Authorization": token }
             });
             item.remove(); // Remove the item from the list upon successful deletion
@@ -216,7 +217,7 @@ async function loadData() {
 
 async function loadFiles() {
     try {
-        const getResponse = await axios.get(`${baseUrl.backendBaseUrl}/premium/uploadFiles`, { headers: {"Authorization" : token} });
+        const getResponse = await axios.get(`${backendBaseUrl}/premium/uploadFiles`, { headers: {"Authorization" : token} });
         const files = getResponse.data;
         files.forEach(file => {
             displayFiles(file);
@@ -240,7 +241,7 @@ let size = 5; // Number of items per page
 // Function to fetch and render items
 async function fetchItems(page) {
     try {
-        const response = await axios.get(`${baseurl.backendBaseUrl}/expense/items?page=${page}&size=${size}`, {
+        const response = await axios.get(`${backendBaseUrl}/expense/items?page=${page}&size=${size}`, {
             headers: { "Authorization": token }
         });
 
