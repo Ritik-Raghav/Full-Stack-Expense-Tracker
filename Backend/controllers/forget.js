@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 const Forgotpassword = require('../models/forgotpassword');
+const frontendBaseUrl = "http://13.127.242.103";
+const backendBaseUrl = "http://13.127.242.103:3000";
 
 const client = Sib.ApiClient.instance;
 
@@ -32,7 +34,7 @@ exports.forgotPassword = async (req, res, next) => {
                 to: [{ email }],
                 subject: "First time sending mail using api",
                 textContent: "this place will be used for sending forgotten password",
-                htmlContent: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
+                htmlContent: `<a href="${backendBaseUrl}/password/resetpassword/${id}">Reset password</a>`,
             })
             console.log("Forgot Password record created successfully");
         }
