@@ -6,7 +6,7 @@ const loginContainer = document.querySelector('#login-container');
 const forgetBtn = document.querySelector('#forget-btn');
 
 forgetBtn.onclick = (e) => {
-    window.location.href = `${baseUrl.frontendBaseUrl}/views/forget-password/forget.html`;
+    window.location.href = `${frontendBaseUrl}/views/forget-password/forget.html`;
 }
 
 form.addEventListener('submit', async (event) => {
